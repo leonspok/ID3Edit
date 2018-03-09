@@ -32,13 +32,13 @@ import Foundation;
  Opens an MP3 file for reading and writing the ID3 tag
  
  - Parameter path: The path to the MP3 file
- - Parameter overwrite: Overwrite the ID3 tag in the file if one exists. This will completely remove all the 
-                        information from the previous tag, if there is one. (false by default)
+ - Parameter overwrite: Overwrite the ID3 tag in the file if one exists. This will completely remove all the
+ information from the previous tag, if there is one. (false by default)
  
  **Note**: If there is an ID3 tag present but not of version 2.x the ID3 tag will be overwritten when the new tag is written
  
  - Throws: `ID3EditErrors.FileDoesNotExist` if the file at the given path does not exist or `ID3EditErrors.NotAnMP3` if the file is not an MP3
-*/
+ */
 public class MP3File
 {
     
@@ -89,7 +89,7 @@ public class MP3File
         {
             tag = ID3Tag();
             parser = TagParser(data: data, tag: tag);
-
+            
             if !overwrite
             {
                 parser.analyzeData();
@@ -136,10 +136,20 @@ public class MP3File
      Returns the album of the song
      
      - Returns: The song album or a blank `String` if not available
-    */
+     */
     public func getAlbum() -> String
     {
         return tag.getAlbum();
+    }
+    
+    /**
+     Returns the position of the song
+     
+     - Returns: The position or a blank `String` if not available
+     */
+    public func getTrack() -> String
+    {
+        return tag.getTrack();
     }
     
     
@@ -157,10 +167,10 @@ public class MP3File
     // MARK: - Mutator Methods
     
     /**
-    Sets the path for the mp3 file to be written
-    
-    - Parameter path: The path of for the file to be written
-    */
+     Sets the path for the mp3 file to be written
+     
+     - Parameter path: The path of for the file to be written
+     */
     public func setPath(path: String)
     {
         self.path = path;
@@ -186,6 +196,16 @@ public class MP3File
     public func setTitle(title: String)
     {
         tag.setTitle(title: title);
+    }
+    
+    /**
+     Sets the position for the ID3 tag
+     
+     - Parameter track: The position to be used when the tag is written
+     */
+    public func setTrack(_ position: UInt, of total: UInt)
+    {
+        tag.setTrack(position, of: total);
     }
     
     
@@ -309,3 +329,4 @@ public class MP3File
         return newData;
     }
 }
+

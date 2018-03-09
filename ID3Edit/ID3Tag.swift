@@ -48,6 +48,7 @@ internal class ID3Tag
             internal static let ARTIST: [Byte] = [0x54, 0x50, 0x31];
             internal static let TITLE: [Byte] = [0x54, 0x54, 0x32];
             internal static let ALBUM: [Byte] = [0x54, 0x41, 0x4C];
+            internal static let TRACK: [Byte] = [0x54, 0x52, 0x4B];
             internal static let LYRICS: [Byte] = [0x55, 0x4C, 0x54];
             internal static let ARTWORK: [Byte] = [0x50, 0x49, 0x43];
             internal static let HEADER: [Byte] = [0x49, 0x44, 0x33, 0x02, 0x00, 0x00];
@@ -59,6 +60,7 @@ internal class ID3Tag
             internal static let ARTIST: [Byte] = [0x54, 0x50, 0x45, 0x31];
             internal static let TITLE: [Byte] = [0x54, 0x49, 0x54, 0x32];
             internal static let ALBUM: [Byte] = [0x54, 0x41, 0x4C, 0x42];
+            internal static let TRACK: [Byte] = [0x54, 0x52, 0x43, 0x4B];
             internal static let LYRICS: [Byte] = [0x55, 0x53, 0x4C, 0x54];
             internal static let ARTWORK: [Byte] = [0x41, 0x50, 0x49, 0x43];
             internal static let HEADER: [Byte] = [0x49, 0x44, 0x33, 0x03, 0x00, 0x00];
@@ -76,6 +78,7 @@ internal class ID3Tag
     private var title = "";
     private var album = "";
     private var lyrics = "";
+    private var track = "";
     private var artwork = AlbumArtwork();
     
     
@@ -106,6 +109,11 @@ internal class ID3Tag
         return album;
     }
     
+    internal func getTrack() -> String
+    {
+        return track
+    }
+    
     internal func getLyrics() -> String
     {
         return lyrics;
@@ -126,6 +134,11 @@ internal class ID3Tag
     internal func setAlbum(album: String)
     {
         self.album = Toolbox.removePadding(str: album);
+    }
+    
+    internal func setTrack(_ position: UInt, of total: UInt)
+    {
+        self.track = Toolbox.removePadding(str: "\(position)/\(total)")
     }
     
     internal func setLyrics(lyrics: String)
@@ -179,6 +192,13 @@ internal class ID3Tag
             // Create the album frame
             let frame = createFrame(frame: version == 3 ? FRAMES.V3.ALBUM : FRAMES.V2.ALBUM, str: getAlbum());
             content.append(contentsOf: frame);
+        }
+        
+        if infoExists(category: track)
+        {
+            // Create track frame
+            let frame = createFrame(frame: version == 3 ? FRAMES.V3.TRACK : FRAMES.V2.TRACK, str: getTrack())
+            content.append(contentsOf: frame)
         }
         
         if infoExists(category: lyrics)
@@ -272,7 +292,7 @@ internal class ID3Tag
         
         // Add the size to the byte array
         var formattedSize = UInt32(format(size: contentSize));
-
+        
         bytes.append(contentsOf: Toolbox.toByteArray(num: &formattedSize));
         
         // Return the completed tag header
@@ -316,7 +336,7 @@ internal class ID3Tag
         // Add artwork data
         let artworkData = Array(UnsafeBufferPointer(start: artwork.art!.bytes.assumingMemoryBound(to: Byte.self), count: artwork.art!.length))
         bytes.append(contentsOf: artworkData);
-
+        
         return bytes;
     }
     
@@ -339,3 +359,4 @@ internal class ID3Tag
         return category != "";
     }
 }
+
