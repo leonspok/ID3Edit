@@ -136,9 +136,16 @@ internal class ID3Tag
         self.album = Toolbox.removePadding(str: album);
     }
     
-    internal func setTrack(_ position: UInt, of total: UInt)
+    internal func setTrack(_ position: UInt, of total: UInt?)
     {
-        self.track = Toolbox.removePadding(str: "\(position)/\(total)")
+        if let total = total
+        {
+            self.track = Toolbox.removePadding(str: "\(position)/\(total)")
+        }
+        else
+        {
+            self.track = Toolbox.removePadding(str: "\(position)")
+        }
     }
     
     internal func setLyrics(lyrics: String)
