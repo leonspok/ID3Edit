@@ -203,7 +203,7 @@ public class MP3File
      
      - Parameter track: The position to be used when the tag is written
      */
-    public func setTrack(_ position: UInt, of total: UInt)
+    public func setTrack(_ position: UInt, of total: UInt?)
     {
         tag.setTrack(position, of: total);
     }
